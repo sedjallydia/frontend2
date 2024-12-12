@@ -1,0 +1,16 @@
+<div class="container">
+    <h2>Dashboard</h2>
+    <div *ngIf="currentUser; else notLoggedIn">
+      <h3>Welcome, {{ currentUser.email }}</h3>
+      <p>Your role: {{ currentUser.role | uppercase }}</p>
+  
+      <div *ngIf="currentUser.role === 'professional'">
+        <a routerLink="/availability" class="btn btn-info mt-3">Manage Availability</a>
+      </div>
+    </div>
+  
+    <ng-template #notLoggedIn>
+      <p>You are not logged in. <a routerLink="/login">Click here to login.</a></p>
+    </ng-template>
+  </div>
+  
