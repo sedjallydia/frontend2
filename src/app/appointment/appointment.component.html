@@ -1,0 +1,62 @@
+<div class="appointment-container">
+  <!-- Section : Gestion des Disponibilités -->
+  <div class="availability-section">
+    <h2>Disponibilités des Professionnels</h2>
+    
+    <!-- Filtrer par professionnel -->
+    <label for="professional-select">Choisir un professionnel</label>
+    <select id="professional-select" [(ngModel)]="selectedProfessional" (change)="filterAvailableSlots()">
+      <option value="">Tous les professionnels</option>
+      <option *ngFor="let professional of professionals" [ngValue]="professional">
+        {{ professional.name }}
+      </option>
+    </select>
+    
+    <!-- Filtrer par date -->
+    <label for="datepicker">Filtrer par date</label>
+    <input type="date" id="datepicker" [(ngModel)]="filterDate" (change)="filterAvailableSlots()">
+    
+    <!-- Affichage des créneaux disponibles -->
+    <div *ngIf="filteredSlots.length > 0">
+      <h3>Créneaux disponibles</h3>
+      <ul>
+        <li *ngFor="let slot of filteredSlots">
+          {{ slot.date | date: 'short' }} - 
+          <button (click)="reserveAppointment(slot)" [disabled]="slot.status !== 'disponible'">Réserver</button>
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="filteredSlots.length === 0">
+      <p>Aucun créneau disponible pour cette sélection.</p>
+    </div>
+  </div>
+
+  <!-- Section : Gestion des Rendez-vous -->
+  <div class="appointments-section">
+    <h2>Mes Rendez-vous</h2>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Professionnel</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let appointment of filteredAppointments">
+          <td>{{ appointment.date | date: 'short' }}</td>
+          <td>{{ appointment.professional.name }}</td>
+          <td>{{ appointment.status }}</td>
+          <td>
+            <button *ngIf="appointment.status === 'en attente'" (click)="cancelAppointmentByClient(appointment)">Annuler</button>
+            <button *ngIf="appointment.status === 'en attente'" (click)="confirmAppointment(appointment)">Confirmer</button>
+            <button *ngIf="appointment.status === 'en attente' && isProfessionalLoggedIn" (click)="confirmAppointment(appointment)">Confirmer par le Professionnel</button>
+            <button *ngIf="appointment.status === 'en attente' && isProfessionalLoggedIn" (click)="cancelAppointmentByProfessional(appointment)">Annuler par le Professionnel</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
